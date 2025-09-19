@@ -1,0 +1,284 @@
+<div class="module-identity-cards">
+    <div class="module-header">
+        <div class="header-content">
+            <h1><i class="fas fa-id-card"></i> Identity Card Manager</h1>
+            <p>Comprehensive identity card management system for students and staff</p>
+        </div>
+        <div class="header-actions">
+            <button id="createCardBtn" class="btn btn-primary">
+                <i class="fas fa-plus"></i> Create New Card
+            </button>
+            <button id="generateAllBtn" class="btn btn-success">
+                <i class="fas fa-file-pdf"></i> Generate All Pending
+            </button>
+            <button id="exportBtn" class="btn btn-secondary">
+                <i class="fas fa-download"></i> Export Cards
+            </button>
+        </div>
+    </div>
+
+    <!-- Statistics Dashboard -->
+    <div class="stats-section">
+        <div class="stat-card">
+            <div class="stat-icon">
+                <i class="fas fa-id-card"></i>
+            </div>
+            <div class="stat-content">
+                <h3 id="totalCards">0</h3>
+                <p>Total Cards</p>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon active">
+                <i class="fas fa-check-circle"></i>
+            </div>
+            <div class="stat-content">
+                <h3 id="activeCards">0</h3>
+                <p>Active Cards</p>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon pending">
+                <i class="fas fa-clock"></i>
+            </div>
+            <div class="stat-content">
+                <h3 id="pendingCards">0</h3>
+                <p>Pending Cards</p>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon expired">
+                <i class="fas fa-exclamation-triangle"></i>
+            </div>
+            <div class="stat-content">
+                <h3 id="expiredCards">0</h3>
+                <p>Expired Cards</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Advanced Filters -->
+    <div class="filters-section">
+        <div class="filter-row">
+            <div class="filter-group">
+                <input type="text" id="searchInput" placeholder="Search by card number, student name, or ID..." />
+            </div>
+            <div class="filter-group">
+                <select id="statusFilter">
+                    <option value="">All Status</option>
+                    <option value="pending">Pending</option>
+                    <option value="active">Active</option>
+                    <option value="generated">Generated</option>
+                    <option value="expired">Expired</option>
+                    <option value="suspended">Suspended</option>
+                    <option value="cancelled">Cancelled</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <select id="typeFilter">
+                    <option value="">All Types</option>
+                    <option value="student">Student</option>
+                    <option value="staff">Staff</option>
+                    <option value="visitor">Visitor</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <input type="date" id="dateFromFilter" placeholder="From Date" />
+            </div>
+            <div class="filter-group">
+                <input type="date" id="dateToFilter" placeholder="To Date" />
+            </div>
+            <div class="filter-actions">
+                <button id="applyFiltersBtn" class="btn btn-primary">
+                    <i class="fas fa-search"></i> Filter
+                </button>
+                <button id="clearFiltersBtn" class="btn btn-secondary">
+                    <i class="fas fa-times"></i> Clear
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cards Management Section -->
+    <div class="cards-section">
+        <div class="section-header">
+            <h3>Identity Cards</h3>
+            <div class="bulk-actions">
+                <button id="bulkActivateBtn" class="btn btn-sm btn-success" disabled>
+                    <i class="fas fa-check"></i> Activate Selected
+                </button>
+                <button id="bulkGenerateBtn" class="btn btn-sm btn-primary" disabled>
+                    <i class="fas fa-file-pdf"></i> Generate Selected
+                </button>
+                <button id="bulkSuspendBtn" class="btn btn-sm btn-warning" disabled>
+                    <i class="fas fa-pause"></i> Suspend Selected
+                </button>
+                <button id="bulkDeleteBtn" class="btn btn-sm btn-danger" disabled>
+                    <i class="fas fa-trash"></i> Delete Selected
+                </button>
+            </div>
+        </div>
+
+        <!-- Cards Table -->
+        <div class="table-container">
+            <table class="data-table" id="identityCardsTable">
+                <thead>
+                    <tr>
+                        <th>
+                            <input type="checkbox" id="selectAllCards" />
+                        </th>
+                        <th>Card Number</th>
+                        <th>Student Name</th>
+                        <th>Student ID</th>
+                        <th>Class</th>
+                        <th>Card Type</th>
+                        <th>Status</th>
+                        <th>Valid From</th>
+                        <th>Valid Until</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="cardsTableBody">
+                    <!-- Cards will be loaded here dynamically -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Pagination -->
+        <div class="pagination" id="pagination" style="display: none;">
+            <div class="pagination-info" id="paginationInfo"></div>
+            <div class="pagination-controls" id="paginationControls"></div>
+        </div>
+    </div>
+
+    <!-- Create/Edit Modal -->
+    <div id="cardModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle">Create Identity Card</h3>
+                <span class="close" id="closeModal">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="cardForm">
+                    <input type="hidden" id="cardId" name="id">
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="studentSelect">Student *</label>
+                            <select id="studentSelect" name="student_id" required>
+                                <option value="">Select Student</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="cardType">Card Type *</label>
+                            <select id="cardType" name="card_type" required>
+                                <option value="">Select Type</option>
+                                <option value="student">Student</option>
+                                <option value="staff">Staff</option>
+                                <option value="visitor">Visitor</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="validFrom">Valid From *</label>
+                            <input type="date" id="validFrom" name="valid_from" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="validUntil">Valid Until *</label>
+                            <input type="date" id="validUntil" name="valid_until" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="status">Status</label>
+                        <select id="status" name="status">
+                            <option value="pending">Pending</option>
+                            <option value="active">Active</option>
+                            <option value="expired">Expired</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="notes">Notes</label>
+                        <textarea id="notes" name="notes" rows="3" placeholder="Additional notes..."></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button id="cancelBtn" class="btn btn-secondary">Cancel</button>
+                <button id="saveCardBtn" class="btn btn-primary">Save Card</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- View Details Modal -->
+    <div id="viewModal" class="modal">
+        <div class="modal-content large">
+            <div class="modal-header">
+                <h3>Identity Card Details</h3>
+                <span class="close" id="closeViewModal">&times;</span>
+            </div>
+            <div class="modal-body" id="viewModalBody">
+                <!-- Content will be loaded dynamically -->
+            </div>
+            <div class="modal-footer">
+                <button id="closeViewBtn" class="btn btn-secondary">Close</button>
+                <button id="editFromViewBtn" class="btn btn-primary">
+                    <i class="fas fa-edit"></i> Edit
+                </button>
+                <button id="generateFromViewBtn" class="btn btn-success">
+                    <i class="fas fa-file-pdf"></i> Generate PDF
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Generate PDF Modal -->
+    <div id="generateModal" class="modal">
+        <div class="modal-content large">
+            <div class="modal-header">
+                <h3>Generate Identity Card PDF</h3>
+                <span class="close" id="closeGenerateModal">&times;</span>
+            </div>
+            <div class="modal-body" id="generateModalBody">
+                <!-- Generation options will be loaded here -->
+            </div>
+            <div class="modal-footer">
+                <button id="cancelGenerateBtn" class="btn btn-secondary">Cancel</button>
+                <button id="previewCardBtn" class="btn btn-info">
+                    <i class="fas fa-eye"></i> Preview
+                </button>
+                <button id="generatePDFBtn" class="btn btn-success">
+                    <i class="fas fa-file-pdf"></i> Generate PDF
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="loading-overlay" style="display: none;">
+        <div class="loading-content">
+            <div class="spinner"></div>
+            <p id="loadingText">Processing...</p>
+        </div>
+    </div>
+
+    <!-- Notification Container -->
+    <div id="notificationContainer" class="notification-container"></div>
+</div>
+
+<!-- Module Initialization Script -->
+<script>
+// Initialize the Identity Card module when DOM is loaded
+document.addEventListener('DOMContentLoaded', function() {
+    // Check if the module manager exists
+    if (window.ModuleManager) {
+        window.ModuleManager.loadModule('identity-cards');
+    } else {
+        // Fallback initialization
+        console.log('Identity Card module loaded');
+    }
+});
+</script>

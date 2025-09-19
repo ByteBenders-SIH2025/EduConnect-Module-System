@@ -1,0 +1,196 @@
+<div class="module-template">
+    <div class="module-header">
+        <div class="header-content">
+            <h1><i class="fas fa-cube"></i> Template Module</h1>
+            <p>A template for creating new EduConnect modules</p>
+        </div>
+        <div class="header-actions">
+            <button id="createItemBtn" class="btn btn-primary">
+                <i class="fas fa-plus"></i> Create New Item
+            </button>
+            <button id="exportBtn" class="btn btn-secondary">
+                <i class="fas fa-download"></i> Export
+            </button>
+        </div>
+    </div>
+
+    <!-- Statistics Section -->
+    <div class="stats-section">
+        <div class="stat-card">
+            <div class="stat-icon">
+                <i class="fas fa-cube"></i>
+            </div>
+            <div class="stat-content">
+                <h3 id="totalItems">0</h3>
+                <p>Total Items</p>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon active">
+                <i class="fas fa-check-circle"></i>
+            </div>
+            <div class="stat-content">
+                <h3 id="activeItems">0</h3>
+                <p>Active Items</p>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon pending">
+                <i class="fas fa-clock"></i>
+            </div>
+            <div class="stat-content">
+                <h3 id="pendingItems">0</h3>
+                <p>Pending Items</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filters Section -->
+    <div class="filters-section">
+        <div class="filter-row">
+            <div class="filter-group">
+                <input type="text" id="searchInput" placeholder="Search items..." />
+            </div>
+            <div class="filter-group">
+                <select id="statusFilter">
+                    <option value="">All Status</option>
+                    <option value="active">Active</option>
+                    <option value="inactive">Inactive</option>
+                    <option value="pending">Pending</option>
+                </select>
+            </div>
+            <div class="filter-actions">
+                <button id="applyFiltersBtn" class="btn btn-primary">
+                    <i class="fas fa-search"></i> Filter
+                </button>
+                <button id="clearFiltersBtn" class="btn btn-secondary">
+                    <i class="fas fa-times"></i> Clear
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Items Section -->
+    <div class="items-section">
+        <div class="section-header">
+            <h3>Template Items</h3>
+            <div class="bulk-actions">
+                <button id="bulkActivateBtn" class="btn btn-sm btn-success" disabled>
+                    <i class="fas fa-check"></i> Activate Selected
+                </button>
+                <button id="bulkDeleteBtn" class="btn btn-sm btn-danger" disabled>
+                    <i class="fas fa-trash"></i> Delete Selected
+                </button>
+            </div>
+        </div>
+
+        <!-- Items Table -->
+        <div class="table-container">
+            <table class="data-table" id="templateItemsTable">
+                <thead>
+                    <tr>
+                        <th>
+                            <input type="checkbox" id="selectAllItems" />
+                        </th>
+                        <th>Name</th>
+                        <th>Description</th>
+                        <th>Status</th>
+                        <th>Created</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="itemsTableBody">
+                    <!-- Items will be loaded here dynamically -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Pagination -->
+        <div class="pagination" id="pagination" style="display: none;">
+            <div class="pagination-info" id="paginationInfo"></div>
+            <div class="pagination-controls" id="paginationControls"></div>
+        </div>
+    </div>
+
+    <!-- Create/Edit Modal -->
+    <div id="itemModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle">Create Template Item</h3>
+                <span class="close" id="closeModal">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="itemForm">
+                    <input type="hidden" id="itemId" name="id">
+                    
+                    <div class="form-group">
+                        <label for="itemName">Name *</label>
+                        <input type="text" id="itemName" name="name" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="itemDescription">Description</label>
+                        <textarea id="itemDescription" name="description" rows="3"></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="itemStatus">Status</label>
+                        <select id="itemStatus" name="status">
+                            <option value="active">Active</option>
+                            <option value="inactive">Inactive</option>
+                            <option value="pending">Pending</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button id="cancelBtn" class="btn btn-secondary">Cancel</button>
+                <button id="saveItemBtn" class="btn btn-primary">Save Item</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- View Modal -->
+    <div id="viewModal" class="modal">
+        <div class="modal-content large">
+            <div class="modal-header">
+                <h3>Template Item Details</h3>
+                <span class="close" id="closeViewModal">&times;</span>
+            </div>
+            <div class="modal-body" id="viewModalBody">
+                <!-- Content will be loaded dynamically -->
+            </div>
+            <div class="modal-footer">
+                <button id="closeViewBtn" class="btn btn-secondary">Close</button>
+                <button id="editFromViewBtn" class="btn btn-primary">
+                    <i class="fas fa-edit"></i> Edit
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="loading-overlay" style="display: none;">
+        <div class="loading-content">
+            <div class="spinner"></div>
+            <p>Processing...</p>
+        </div>
+    </div>
+
+    <!-- Notification Container -->
+    <div id="notificationContainer" class="notification-container"></div>
+</div>
+
+<!-- Module Initialization Script -->
+<script>
+// Initialize the Template module when DOM is loaded
+document.addEventListener('DOMContentLoaded', function() {
+    // Check if the module manager exists
+    if (window.ModuleManager) {
+        window.ModuleManager.loadModule('template-module');
+    } else {
+        // Fallback initialization
+        console.log('Template module loaded');
+    }
+});
+</script>

@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Identity Cards Module</title>
+    <link rel="stylesheet" href="frontend/public/assets/css/dashboard.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="frontend/public/assets/js/module-manager.js"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: #f8fafc;
+        }
+        .test-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .test-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .test-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+        }
+        .test-button {
+            background: #3b82f6;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        .test-button:hover {
+            background: #2563eb;
+        }
+        .test-result {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 6px;
+        }
+        .success {
+            background: #dcfce7;
+            color: #16a34a;
+            border: 1px solid #bbf7d0;
+        }
+        .error {
+            background: #fee2e2;
+            color: #dc2626;
+            border: 1px solid #fecaca;
+        }
+        .warning {
+            background: #fef3c7;
+            color: #d97706;
+            border: 1px solid #fde68a;
+        }
+        .module-preview {
+            border: 2px dashed #d1d5db;
+            border-radius: 8px;
+            padding: 20px;
+            min-height: 400px;
+            background: #f9fafb;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <div class="test-header">
+            <h1><i class="fas fa-id-card"></i> Identity Cards Module Test</h1>
+            <p>Testing the complex module architecture for EduConnect</p>
+        </div>
+
+        <div class="test-section">
+            <h3>🔧 Module Manager Test</h3>
+            <button class="test-button" onclick="testModuleManager()">Test Module Manager</button>
+            <button class="test-button" onclick="testModuleRegistry()">Test Module Registry</button>
+            <button class="test-button" onclick="testModuleLoading()">Test Module Loading</button>
+            <div id="moduleManagerResult" class="test-result" style="display: none;"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>📁 File Structure Test</h3>
+            <button class="test-button" onclick="testFileStructure()">Check File Structure</button>
+            <div id="fileStructureResult" class="test-result" style="display: none;"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>🌐 API Endpoints Test</h3>
+            <button class="test-button" onclick="testAPIEndpoints()">Test API Endpoints</button>
+            <div id="apiResult" class="test-result" style="display: none;"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>🎨 Module Preview</h3>
+            <button class="test-button" onclick="loadModulePreview()">Load Module Preview</button>
+            <button class="test-button" onclick="clearPreview()">Clear Preview</button>
+            <div id="modulePreview" class="module-preview">
+                <p style="text-align: center; color: #6b7280; margin-top: 150px;">
+                    Click "Load Module Preview" to see the Identity Cards module
+                </p>
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h3>📊 Installation Status</h3>
+            <div id="installationStatus" class="test-result">
+                <p><strong>Module Files:</strong> <span id="moduleFilesStatus">Checking...</span></p>
+                <p><strong>Database:</strong> <span id="databaseStatus">Not tested</span></p>
+                <p><strong>API:</strong> <span id="apiStatus">Not tested</span></p>
+                <p><strong>Registry:</strong> <span id="registryStatus">Checking...</span></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Test functions
+        function showResult(elementId, message, type = 'success') {
+            const element = document.getElementById(elementId);
+            element.className = `test-result ${type}`;
+            element.innerHTML = message;
+            element.style.display = 'block';
+        }
+
+        function testModuleManager() {
+            try {
+                if (window.ModuleManager) {
+                    showResult('moduleManagerResult', '✅ Module Manager is loaded and ready!', 'success');
+                } else {
+                    showResult('moduleManagerResult', '❌ Module Manager not found', 'error');
+                }
+            } catch (e) {
+                showResult('moduleManagerResult', '❌ Error: ' + e.message, 'error');
+            }
+        }
+
+        async function testModuleRegistry() {
+            try {
+                const response = await fetch('/modules/registry.json');
+                if (response.ok) {
+                    const registry = await response.json();
+                    const identityModule = registry.modules.find(m => m.key === 'identity-cards');
+                    if (identityModule) {
+                        showResult('moduleManagerResult', '✅ Module registry loaded. Identity Cards module found!', 'success');
+                        document.getElementById('registryStatus').innerHTML = '✅ Registered';
+                    } else {
+                        showResult('moduleManagerResult', '⚠️ Module registry loaded but Identity Cards module not found', 'warning');
+                        document.getElementById('registryStatus').innerHTML = '⚠️ Not registered';
+                    }
+                } else {
+                    showResult('moduleManagerResult', '❌ Failed to load module registry', 'error');
+                    document.getElementById('registryStatus').innerHTML = '❌ Failed to load';
+                }
+            } catch (e) {
+                showResult('moduleManagerResult', '❌ Error loading registry: ' + e.message, 'error');
+                document.getElementById('registryStatus').innerHTML = '❌ Error';
+            }
+        }
+
+        async function testModuleLoading() {
+            try {
+                if (window.ModuleManager) {
+                    await window.ModuleManager.loadModule('identity-cards');
+                    showResult('moduleManagerResult', '✅ Module loaded successfully!', 'success');
+                } else {
+                    showResult('moduleManagerResult', '❌ Module Manager not available', 'error');
+                }
+            } catch (e) {
+                showResult('moduleManagerResult', '❌ Error loading module: ' + e.message, 'error');
+            }
+        }
+
+        async function testFileStructure() {
+            const files = [
+                '/modules/Module-Identity_Card/manifest.json',
+                '/modules/Module-Identity_Card/index.html',
+                '/modules/Module-Identity_Card/src/assets/css/identity.css',
+                '/modules/Module-Identity_Card/src/assets/js/identity.js'
+            ];
+
+            let results = [];
+            let allExist = true;
+
+            for (const file of files) {
+                try {
+                    const response = await fetch(file);
+                    if (response.ok) {
+                        results.push(`✅ ${file}`);
+                    } else {
+                        results.push(`❌ ${file} (${response.status})`);
+                        allExist = false;
+                    }
+                } catch (e) {
+                    results.push(`❌ ${file} (Error: ${e.message})`);
+                    allExist = false;
+                }
+            }
+
+            const type = allExist ? 'success' : 'warning';
+            showResult('fileStructureResult', results.join('<br>'), type);
+            
+            document.getElementById('moduleFilesStatus').innerHTML = allExist ? '✅ All files present' : '⚠️ Some files missing';
+        }
+
+        async function testAPIEndpoints() {
+            const endpoints = [
+                '/api/v1/identity-cards',
+                '/api/v1/identity-cards/statistics'
+            ];
+
+            let results = [];
+            let anyWorking = false;
+
+            for (const endpoint of endpoints) {
+                try {
+                    const response = await fetch(endpoint);
+                    if (response.ok) {
+                        results.push(`✅ ${endpoint} (${response.status})`);
+                        anyWorking = true;
+                    } else {
+                        results.push(`⚠️ ${endpoint} (${response.status})`);
+                    }
+                } catch (e) {
+                    results.push(`❌ ${endpoint} (Error: ${e.message})`);
+                }
+            }
+
+            const type = anyWorking ? 'success' : 'warning';
+            showResult('apiResult', results.join('<br>'), type);
+            
+            document.getElementById('apiStatus').innerHTML = anyWorking ? '✅ Working' : '⚠️ Not accessible';
+        }
+
+        async function loadModulePreview() {
+            try {
+                const response = await fetch('/modules/Module-Identity_Card/index.html');
+                if (response.ok) {
+                    const html = await response.text();
+                    document.getElementById('modulePreview').innerHTML = html;
+                    
+                    // Load module CSS
+                    const cssLink = document.createElement('link');
+                    cssLink.rel = 'stylesheet';
+                    cssLink.href = '/modules/Module-Identity_Card/src/assets/css/identity.css';
+                    document.head.appendChild(cssLink);
+                    
+                    // Load module JS
+                    const jsScript = document.createElement('script');
+                    jsScript.src = '/modules/Module-Identity_Card/src/assets/js/identity.js';
+                    document.head.appendChild(jsScript);
+                    
+                    showResult('moduleManagerResult', '✅ Module preview loaded successfully!', 'success');
+                } else {
+                    showResult('moduleManagerResult', '❌ Failed to load module preview', 'error');
+                }
+            } catch (e) {
+                showResult('moduleManagerResult', '❌ Error loading preview: ' + e.message, 'error');
+            }
+        }
+
+        function clearPreview() {
+            document.getElementById('modulePreview').innerHTML = `
+                <p style="text-align: center; color: #6b7280; margin-top: 150px;">
+                    Click "Load Module Preview" to see the Identity Cards module
+                </p>
+            `;
+        }
+
+        // Initialize tests on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            testModuleManager();
+            testModuleRegistry();
+            testFileStructure();
+        });
+    </script>
+</body>
+</html>

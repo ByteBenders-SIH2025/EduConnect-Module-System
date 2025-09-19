@@ -1,0 +1,81 @@
+{
+  "key": "identity-cards",
+  "name": "Identity Card Manager",
+  "version": "1.0.0",
+  "type": "complex",
+  "entry": "/modules/Module-Identity_Card/index.html",
+  "scripts": [
+    "/modules/Module-Identity_Card/src/assets/js/identity.js"
+  ],
+  "styles": [
+    "/modules/Module-Identity_Card/src/assets/css/identity.css"
+  ],
+  "description": "Comprehensive identity card management system for students and staff",
+  "author": "EduConnect Team",
+  "license": "MIT",
+  "dependencies": {
+    "php": ">=7.4",
+    "mysql": ">=5.7"
+  },
+  "permissions": [
+    "identity_card.create",
+    "identity_card.read",
+    "identity_card.update",
+    "identity_card.delete",
+    "identity_card.generate"
+  ],
+  "api_endpoints": {
+    "base": "/api/v1/identity-cards",
+    "list": "GET /api/v1/identity-cards",
+    "create": "POST /api/v1/identity-cards",
+    "view": "GET /api/v1/identity-cards/{id}",
+    "update": "PUT /api/v1/identity-cards/{id}",
+    "delete": "DELETE /api/v1/identity-cards/{id}",
+    "generate": "POST /api/v1/identity-cards/{id}/generate",
+    "download": "GET /api/v1/identity-cards/{id}/download",
+    "statistics": "GET /api/v1/identity-cards/statistics",
+    "bulk": "POST /api/v1/identity-cards/bulk"
+  },
+  "database": {
+    "tables": [
+      "identity_cards",
+      "identity_card_status_log",
+      "identity_card_activity_log"
+    ],
+    "migrations": [
+      "migrations/2025_09_19_create_identity_cards_table.sql"
+    ]
+  },
+  "views": {
+    "list": "src/views/list.php",
+    "generate": "src/views/generate.php",
+    "view": "src/views/view.php"
+  },
+  "settings": {
+    "card_template": "default",
+    "auto_generate": false,
+    "require_approval": true,
+    "validity_period": 365,
+    "file_upload_path": "/backend/storage/uploads/identity_cards/",
+    "max_file_size": "10MB",
+    "allowed_formats": ["pdf", "png", "jpg"]
+  },
+  "hooks": {
+    "on_install": "IdentityCardController::onInstall",
+    "on_uninstall": "IdentityCardController::onUninstall",
+    "on_activate": "IdentityCardController::onActivate",
+    "on_deactivate": "IdentityCardController::onDeactivate"
+  },
+  "features": [
+    "card_creation",
+    "pdf_generation",
+    "status_management",
+    "bulk_operations",
+    "search_filtering",
+    "statistics_dashboard",
+    "expiration_alerts",
+    "activity_logging",
+    "security_features",
+    "responsive_design"
+  ]
+}

@@ -1,0 +1,65 @@
+{
+  "key": "template-module",
+  "name": "Template Module",
+  "version": "1.0.0",
+  "type": "complex",
+  "entry": "/modules/Module-Template/index.html",
+  "scripts": [
+    "/modules/Module-Template/src/assets/js/template.js"
+  ],
+  "styles": [
+    "/modules/Module-Template/src/assets/css/template.css"
+  ],
+  "description": "A template module for creating new EduConnect modules",
+  "author": "Your Name",
+  "license": "MIT",
+  "dependencies": {
+    "php": ">=7.4",
+    "mysql": ">=5.7"
+  },
+  "permissions": [
+    "template.create",
+    "template.read",
+    "template.update",
+    "template.delete"
+  ],
+  "api_endpoints": {
+    "base": "/api/v1/template",
+    "list": "GET /api/v1/template",
+    "create": "POST /api/v1/template",
+    "view": "GET /api/v1/template/{id}",
+    "update": "PUT /api/v1/template/{id}",
+    "delete": "DELETE /api/v1/template/{id}"
+  },
+  "database": {
+    "tables": [
+      "template_items"
+    ],
+    "migrations": [
+      "migrations/2025_09_19_create_template_items_table.sql"
+    ]
+  },
+  "views": {
+    "list": "src/views/list.php",
+    "create": "src/views/create.php",
+    "view": "src/views/view.php"
+  },
+  "settings": {
+    "auto_save": false,
+    "require_approval": true,
+    "max_items": 100
+  },
+  "hooks": {
+    "on_install": "TemplateController::onInstall",
+    "on_uninstall": "TemplateController::onUninstall",
+    "on_activate": "TemplateController::onActivate",
+    "on_deactivate": "TemplateController::onDeactivate"
+  },
+  "features": [
+    "item_creation",
+    "item_management",
+    "search_filtering",
+    "bulk_operations",
+    "statistics_dashboard"
+  ]
+}

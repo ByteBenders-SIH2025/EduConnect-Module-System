@@ -1,0 +1,62 @@
+{
+  "name": "Identity Card Manager",
+  "version": "1.0.0",
+  "description": "A comprehensive identity card management system for students and staff",
+  "author": "EduConnect Team",
+  "license": "MIT",
+  "main": "src/controllers/IdentityCardController.php",
+  "dependencies": {
+    "php": ">=7.4",
+    "mysql": ">=5.7"
+  },
+  "permissions": [
+    "identity_card.create",
+    "identity_card.read",
+    "identity_card.update",
+    "identity_card.delete",
+    "identity_card.generate"
+  ],
+  "routes": {
+    "identity-cards": {
+      "list": "GET /api/v1/identity-cards",
+      "create": "POST /api/v1/identity-cards",
+      "view": "GET /api/v1/identity-cards/{id}",
+      "update": "PUT /api/v1/identity-cards/{id}",
+      "delete": "DELETE /api/v1/identity-cards/{id}",
+      "generate": "POST /api/v1/identity-cards/{id}/generate"
+    }
+  },
+  "database": {
+    "tables": [
+      "identity_cards"
+    ],
+    "migrations": [
+      "migrations/2025_09_19_create_identity_cards_table.sql"
+    ]
+  },
+  "assets": {
+    "css": [
+      "src/assets/css/identity.css"
+    ],
+    "js": [
+      "src/assets/js/identity.js"
+    ]
+  },
+  "views": {
+    "list": "src/views/list.php",
+    "generate": "src/views/generate.php",
+    "view": "src/views/view.php"
+  },
+  "settings": {
+    "card_template": "default",
+    "auto_generate": false,
+    "require_approval": true,
+    "validity_period": 365
+  },
+  "hooks": {
+    "on_install": "IdentityCardController::onInstall",
+    "on_uninstall": "IdentityCardController::onUninstall",
+    "on_activate": "IdentityCardController::onActivate",
+    "on_deactivate": "IdentityCardController::onDeactivate"
+  }
+}
